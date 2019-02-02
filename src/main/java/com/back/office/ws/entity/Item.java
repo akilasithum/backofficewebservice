@@ -2,6 +2,7 @@ package com.back.office.ws.entity;
 
 public class Item {
     private int itemId;
+    private String itemCode;
     private String itemName;
     private String serviceType;
     private String category;
@@ -15,6 +16,14 @@ public class Item {
 
     public int getItemId() {
         return itemId;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public void setItemId(int itemId) {

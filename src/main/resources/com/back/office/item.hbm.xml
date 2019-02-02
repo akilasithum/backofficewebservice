@@ -8,6 +8,9 @@
             <column name="itemId" />
             <generator class="identity" />
         </id>
+        <property name="itemCode" type="java.lang.String">
+            <column name="itemCode"  length="30"/>
+        </property>
         <property name="itemName" type="java.lang.String">
             <column name="itemName" length="100" />
         </property>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.CreditCard" table="pos_credit_card_details" catalog="">
+        <id name="orderCreditCardId" type="java.lang.Integer">
+            <column name="orderCreditCardId" />
+            <generator class="identity" />
+        </id>
+        <property name="orderId" type="java.lang.String">
+            <column name="orderId" length="50"/>
+        </property>
+        <property name="creditCardNumber" type="java.lang.String">
+            <column name="creditCardNumber" length="30"/>
+        </property>
+        <property name="cardHolderName" type="java.lang.String">
+            <column name="cardHolderName" length="50"/>
+        </property>
+        <property name="expireDate" type="java.lang.String">
+            <column name="expireDate" length="20"/>
+        </property>
+        <property name="amountFloat" type="java.lang.Float">
+            <column name="amount" />
+        </property>
+    </class>
+</hibernate-mapping>

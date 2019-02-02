@@ -6,7 +6,7 @@
     <session-factory>
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">root</property>
+        <property name="hibernate.connection.password"></property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/flight_pos</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -17,5 +17,14 @@
         <mapping resource="com/back/office/equipmentType.hbm.xml"></mapping>
         <mapping resource="com/back/office/kitItem.hbm.xml"></mapping>
         <mapping resource="com/back/office/item.hbm.xml"></mapping>
+        <mapping resource="com/back/office/voucher.hbm.xml"></mapping>
+        <mapping resource="com/back/office/currency.hbm.xml"></mapping>
+        <mapping resource="com/back/office/orderMainDetails.hbm.xml"></mapping>
+        <mapping resource="com/back/office/paymentMethods.hbm.xml"></mapping>
+        <mapping resource="com/back/office/itemSale.hbm.xml"></mapping>
+        <mapping resource="com/back/office/creditCard.hbm.xml"></mapping>
+        <mapping resource="com/back/office/posFlight.hbm.xml"></mapping>
+        <mapping resource="com/back/office/sifDetails.hbm.xml"></mapping>
+        <mapping resource="com/back/office/promotion.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

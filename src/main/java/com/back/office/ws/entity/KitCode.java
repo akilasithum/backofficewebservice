@@ -7,8 +7,8 @@ public class KitCode {
     private String description;
     private String serviceType;
     private String activateDate;
-    private int noOfSeals;
     private int noOfEquipments;
+    private String packTypes;
 
     public int getKitCodeId() {
         return kitCodeId;
@@ -50,19 +50,19 @@ public class KitCode {
         this.activateDate = activateDate;
     }
 
-    public int getNoOfSeals() {
-        return noOfSeals;
-    }
-
-    public void setNoOfSeals(int noOfSeals) {
-        this.noOfSeals = noOfSeals;
-    }
-
     public int getNoOfEquipments() {
         return noOfEquipments;
     }
 
     public void setNoOfEquipments(int noOfEquipments) {
         this.noOfEquipments = noOfEquipments;
+    }
+
+    public String getPackTypes() {
+        return packTypes;
+    }
+
+    public void setPackTypes(String packTypes) {
+        this.packTypes = packTypes;
     }
 }

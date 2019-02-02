@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.POSFlight" table="pos_order_flight_details" catalog="">
+        <id name="flightUniqueId" type="java.lang.Integer">
+            <column name="flightUniqueId" />
+            <generator class="identity" />
+        </id>
+        <property name="flightId" type="java.lang.String">
+            <column name="flightId" length="30" />
+        </property>
+        <property name="flightName" type="java.lang.String">
+            <column name="flightNo" length="30" />
+        </property>
+        <property name="flightDateFld" type="java.util.Date">
+            <column name="flightDate" length="30" />
+        </property>
+        <property name="flightFrom" type="java.lang.String">
+            <column name="flightFrom" length="30" />
+        </property>
+        <property name="flightTo" type="java.lang.String">
+            <column name="flightTo" length="50" />
+        </property>
+        <property name="eClassPaxCountInt" type="java.lang.Integer">
+            <column name="eClassPaxCount" />
+        </property>
+        <property name="bClassPaxCountInt" type="java.lang.Integer">
+            <column name="bClassPaxCount" />
+        </property>
+        <property name="sifNoInt" type="java.lang.Integer">
+            <column name="sifNo" />
+        </property>
+    </class>
+</hibernate-mapping>

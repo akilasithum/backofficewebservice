@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.OrderMainDetails" table="pos_order_main_details" catalog="">
+        <id name="orderDetailId" type="java.lang.Integer">
+            <column name="orderDetailId" />
+        </id>
+        <property name="orderId" type="java.lang.String">
+            <column name="orderId" length="50"/>
+        </property>
+        <property name="serviceType" type="java.lang.String">
+            <column name="serviceType" length="30"/>
+        </property>
+        <property name="taxFloat" type="java.lang.Float">
+            <column name="tax"  />
+        </property>
+        <property name="discountFloat" type="java.lang.Float">
+            <column name="discount" />
+        </property>
+        <property name="seatNo" type="java.lang.String">
+            <column name="seatNo" length="30" />
+        </property>
+        <property name="subTotalFloat" type="java.lang.Float">
+            <column name="subTotal" />
+        </property>
+        <property name="flightId" type="java.lang.String">
+            <column name="flightId " length="30"/>
+        </property>
+    </class>
+</hibernate-mapping>

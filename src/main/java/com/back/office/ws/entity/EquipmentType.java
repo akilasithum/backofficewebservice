@@ -6,8 +6,8 @@ public class EquipmentType {
     private String packType;
     private String packDescription;
     private String equipmentType;
-    private String kitCode;
     private int noOfDrawers;
+    private int noOfSeals;
 
     public int getEquipmentId() {
         return equipmentId;
@@ -41,20 +41,20 @@ public class EquipmentType {
         this.equipmentType = equipmentType;
     }
 
-    public String getKitCode() {
-        return kitCode;
-    }
-
-    public void setKitCode(String kitCode) {
-        this.kitCode = kitCode;
-    }
-
     public int getNoOfDrawers() {
         return noOfDrawers;
     }
 
     public void setNoOfDrawers(int noOfDrawers) {
         this.noOfDrawers = noOfDrawers;
+    }
+
+    public int getNoOfSeals() {
+        return noOfSeals;
+    }
+
+    public void setNoOfSeals(int noOfSeals) {
+        this.noOfSeals = noOfSeals;
     }
 
     @Override
