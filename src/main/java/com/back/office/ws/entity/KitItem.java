@@ -8,6 +8,15 @@ public class KitItem {
     private String packType;
     private String drawerName;
     private int quantity;
+    private int recordStatus;
+
+    public int getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(int recordStatus) {
+        this.recordStatus = recordStatus;
+    }
 
     public int getCartItemId() {
         return cartItemId;

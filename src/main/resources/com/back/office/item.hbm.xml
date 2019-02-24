@@ -41,6 +41,12 @@
         <property name="activateDate" type="java.lang.String">
             <column name="activateDate"  length="30"/>
         </property>
+        <property name="image" type="binary">
+            <column name="image" />
+        </property>
+        <property name="recordStatus" type="java.lang.Integer">
+            <column name="recordStatus"  />
+        </property>
         <filter name="serviceTypeFilter"
                 condition=":serviceType=serviceType"/>
     </class>

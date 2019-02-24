@@ -1,10 +1,13 @@
 package com.back.office.ws.db;
 
+import com.back.office.ws.entity.Item;
 import com.back.office.ws.entity.Promotion;
 import com.back.office.ws.entity.SIFDetails;
+import com.back.office.ws.entity.User;
 import com.back.office.ws.persistence.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Calendar;
@@ -17,8 +20,9 @@ public class DBConnection {
         try
         {
             Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            return session.createCriteria(Class.forName(className)).list();
+            Criteria criteria = session.createCriteria(Class.forName(className));
+            criteria.add(Restrictions.eq("recordStatus", 0));
+            return criteria.list();
         } catch (Exception e) {
             return null;
         }
@@ -66,6 +70,28 @@ public class DBConnection {
         criteria.add(Restrictions.le("activateDate", yesterday(new Date())));
         criteria.add(Restrictions.ge("endDate", tommorow(new Date())));
         return criteria.list();
+    }
+
+    public List getUsers(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(User.class);
+        criteria.add(Restrictions.eq("userRoleId", 9));
+        criteria.add(Restrictions.eq("active", true));
+        criteria.add(Restrictions.eq("recordStatus", 0));
+        return criteria.list();
+    }
+
+    public byte[] getItemImageFromItemCode(String itemCode){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(Item.class);
+        criteria.add(Restrictions.eq("itemCode", itemCode));
+        criteria.add(Restrictions.eq("recordStatus", 0));
+        criteria.setProjection(Projections.distinct(Projections.property("image")));
+        List list = criteria.list();
+        if(list != null && list.size() > 0){
+            return (byte[]) criteria.list().get(0);
+        }
+        return null;
     }
 
     private Date yesterday(Date date) {

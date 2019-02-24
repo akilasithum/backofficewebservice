@@ -8,6 +8,15 @@ public class EquipmentType {
     private String equipmentType;
     private int noOfDrawers;
     private int noOfSeals;
+    private int recordStatus;
+
+    public int getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(int recordStatus) {
+        this.recordStatus = recordStatus;
+    }
 
     public int getEquipmentId() {
         return equipmentId;

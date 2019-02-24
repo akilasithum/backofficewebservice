@@ -5,6 +5,7 @@ import com.back.office.ws.entity.*;
 import com.back.office.ws.utils.WSUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -13,13 +14,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Path("/")
@@ -311,10 +321,10 @@ public class HelloRestService {
     @GET
     @Path("/items")
     public Response getItems() {
-        List<Item> kitItems = (List<Item>)connection.getAllValues("com.back.office.ws.entity.Item");
+        List<Item> items = (List<Item>)connection.getAllValues("com.back.office.ws.entity.Item");
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement( "Items" );
-        for(Item item : kitItems) {
+        for(Item item : items) {
             Element flightElement = root.addElement("Item");
             flightElement.addElement("itemNo").addText(String.valueOf(item.getItemId()));
             flightElement.addElement("itemCode").addText(String.valueOf(item.getItemCode()));
@@ -330,6 +340,46 @@ public class HelloRestService {
             flightElement.addElement("weight").addText(String.valueOf(item.getWeight()));
         }
         return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @POST
+    @Consumes("text/plain")
+    @Path("/itemImages")
+    @Produces("image/png")
+    public Response getItemImages(String itemCode) throws IOException {
+            byte[] itemImage = connection.getItemImageFromItemCode(itemCode);
+            if(itemImage != null) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(itemImage);
+                BufferedImage bImage = ImageIO.read(bis);
+                File file = new File(itemCode + ".png");
+                float width = bImage.getWidth();
+                float height = bImage.getHeight();
+                float maxVal = 150;
+                if (width > maxVal || height > maxVal) {
+                    if (width >= height) {
+                        height = (height / width) * maxVal;
+                        width = maxVal;
+                    } else {
+                        width = (width / height) * maxVal;
+                        height = maxVal;
+                    }
+                }
+                int widthInt = (int) Math.round(width);
+                int heightInt = (int) Math.round(height);
+                BufferedImage outputImage = new BufferedImage(widthInt,
+                        heightInt, bImage.getType());
+
+                // scales the input image to the output image
+                Graphics2D g2d = outputImage.createGraphics();
+                g2d.drawImage(bImage, 0, 0, widthInt, heightInt, null);
+                g2d.dispose();
+                ImageIO.write(outputImage, "png", file);
+                return Response.ok(file, "image/png").header("Inline", "filename=\"" + file.getName() + "\"")
+                        .build();
+            }
+            else {
+                return Response.status(200).entity("error").build();
+            }
     }
 
     @GET
@@ -405,6 +455,25 @@ public class HelloRestService {
             voucherElement.addElement("comboId").addText("");
             voucherElement.addElement("discount").addText("");
             voucherElement.addElement("items").addText("");
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
+    @Path("/users")
+    public Response getUsers() {
+        List<User> users = (List<User>)connection.getUsers();
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement( "users" );
+        for(User user : users){
+            Element voucherElement = root.addElement("user");
+            voucherElement.addElement("userName").addText(user.getStaffId());
+            voucherElement.addElement("password").addText(String.valueOf(user.getPassword()));
+        }
+        if(users.size() == 1){
+            Element voucherElement = root.addElement("user");
+            voucherElement.addElement("userName").addText("");
+            voucherElement.addElement("password").addText("");
         }
         return Response.status(200).entity(document.asXML()).build();
     }

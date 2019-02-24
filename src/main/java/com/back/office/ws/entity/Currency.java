@@ -9,6 +9,15 @@ public class Currency {
     private String currencyType;
     private String priorityOrder;
     private String effectiveDate;
+    private int recordStatus;
+
+    public int getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(int recordStatus) {
+        this.recordStatus = recordStatus;
+    }
 
     public int getCurrencyCodeId() {
         return currencyCodeId;

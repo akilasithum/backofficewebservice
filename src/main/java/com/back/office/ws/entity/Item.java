@@ -13,6 +13,8 @@ public class Item {
     private String baseCurrency;
     private float basePrice;
     private String activateDate;
+    private byte[] image;
+    private int recordStatus;
 
     public int getItemId() {
         return itemId;
@@ -108,5 +110,21 @@ public class Item {
 
     public void setActivateDate(String activateDate) {
         this.activateDate = activateDate;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public int getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(int recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }
