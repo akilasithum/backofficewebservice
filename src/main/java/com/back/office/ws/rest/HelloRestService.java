@@ -332,12 +332,10 @@ public class HelloRestService {
             flightElement.addElement("category").addText(item.getCategory());
             flightElement.addElement("catlogNo").addText(item.getCatalogue());
             flightElement.addElement("price").addText(String.valueOf(item.getBasePrice()));
-            flightElement.addElement("serviceType").addText(item.getServiceType());
             flightElement.addElement("baseCurrency").addText(item.getBaseCurrency());
             flightElement.addElement("secondCurrency").addText(item.getCostCurrency());
             flightElement.addElement("secondPrice").addText(String.valueOf(item.getCostPrice()));
             flightElement.addElement("activeDate").addText(item.getActivateDate());
-            flightElement.addElement("weight").addText(String.valueOf(item.getWeight()));
         }
         return Response.status(200).entity(document.asXML()).build();
     }
@@ -354,7 +352,7 @@ public class HelloRestService {
                 File file = new File(itemCode + ".png");
                 float width = bImage.getWidth();
                 float height = bImage.getHeight();
-                float maxVal = 150;
+                float maxVal = 100;
                 if (width > maxVal || height > maxVal) {
                     if (width >= height) {
                         height = (height / width) * maxVal;
@@ -469,11 +467,13 @@ public class HelloRestService {
             Element voucherElement = root.addElement("user");
             voucherElement.addElement("userName").addText(user.getStaffId());
             voucherElement.addElement("password").addText(String.valueOf(user.getPassword()));
+            voucherElement.addElement("userRole").addText(String.valueOf(user.getUserRoleId()));
         }
         if(users.size() == 1){
             Element voucherElement = root.addElement("user");
             voucherElement.addElement("userName").addText("");
             voucherElement.addElement("password").addText("");
+            voucherElement.addElement("userRole").addText("");
         }
         return Response.status(200).entity(document.asXML()).build();
     }

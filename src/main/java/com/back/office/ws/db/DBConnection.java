@@ -75,7 +75,8 @@ public class DBConnection {
     public List getUsers(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         Criteria criteria = session.createCriteria(User.class);
-        criteria.add(Restrictions.eq("userRoleId", 9));
+        Integer[] roleIds = {9,10};
+        criteria.add(Restrictions.in("userRoleId", roleIds));
         criteria.add(Restrictions.eq("active", true));
         criteria.add(Restrictions.eq("recordStatus", 0));
         return criteria.list();

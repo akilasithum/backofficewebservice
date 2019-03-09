@@ -4,10 +4,8 @@ public class Item {
     private int itemId;
     private String itemCode;
     private String itemName;
-    private String serviceType;
     private String category;
     private String catalogue;
-    private float weight;
     private String costCurrency;
     private float costPrice;
     private String baseCurrency;
@@ -40,14 +38,6 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
     public String getCategory() {
         return category;
     }
@@ -62,14 +52,6 @@ public class Item {
 
     public void setCatalogue(String catalogue) {
         this.catalogue = catalogue;
-    }
-
-    public float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
     }
 
     public String getCostCurrency() {
