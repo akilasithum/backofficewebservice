@@ -47,6 +47,9 @@
         <property name="recordStatus" type="java.lang.Integer">
             <column name="recordStatus"  />
         </property>
+        <property name="nfcTag" type="java.lang.String">
+            <column name="nfcId" length="50"  />
+        </property>
         <filter name="serviceTypeFilter"
                 condition=":serviceType=serviceType"/>
     </class>

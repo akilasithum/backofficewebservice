@@ -15,6 +15,7 @@ public class Item {
     private String activateDate;
     private byte[] image;
     private int recordStatus;
+    private String nfcTag;
 
     public int getItemId() {
         return itemId;
@@ -126,5 +127,13 @@ public class Item {
 
     public void setRecordStatus(int recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public String getNfcTag() {
+        return nfcTag;
+    }
+
+    public void setNfcTag(String nfcTag) {
+        this.nfcTag = nfcTag;
     }
 }

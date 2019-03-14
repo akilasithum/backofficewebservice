@@ -338,6 +338,7 @@ public class HelloRestService {
             flightElement.addElement("secondPrice").addText(String.valueOf(item.getCostPrice()));
             flightElement.addElement("activeDate").addText(item.getActivateDate());
             flightElement.addElement("weight").addText(String.valueOf(item.getWeight()));
+            flightElement.addElement("nfcTag").addText(String.valueOf(item.getNfcTag()));
         }
         return Response.status(200).entity(document.asXML()).build();
     }
