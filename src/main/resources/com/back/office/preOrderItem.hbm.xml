@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.PreOrderItem" table="pre_order_items" catalog="">
+        <id name="preOrderItemId" type="java.lang.Integer">
+            <column name="preOrderItemId" />
+            <generator class="identity" />
+        </id>
+        <property name="preOrderId" type="java.lang.Integer">
+            <column name="preOrderId" />
+        </property>
+        <property name="category" type="java.lang.String">
+            <column name="category" length="50"/>
+        </property>
+        <property name="itemCode" type="java.lang.String">
+            <column name="itemNo" length="100" />
+        </property>
+        <property name="quantity" type="java.lang.Integer">
+            <column name="quantity" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -266,6 +266,55 @@ public class HelloRestService {
     }
 
     @GET
+    @Path("/preOrders")
+    public Response getPreOrders() {
+        List<PreOrder> preOrders = (List<PreOrder>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.PreOrder");
+        Document document = DocumentHelper.createDocument();
+
+        Element root = document.addElement( "preOrders" );
+        for(PreOrder preOrder : preOrders) {
+            Element item = root.addElement("preOrder");
+            item.addElement("preOrderId").addText(String.valueOf(preOrder.getPreOrderId()));
+            item.addElement("PNR").addText(preOrder.getPNR());
+            item.addElement("customerName").addText(preOrder.getCustomerName());
+            item.addElement("serviceType").addText(preOrder.getServiceType());
+        }
+        if(preOrders.size() == 1){
+            Element flightElement = root.addElement("preOrder");
+            flightElement.addElement("preOrderId").addText("");
+            flightElement.addElement("PNR").addText("");
+            flightElement.addElement("customerName").addText("");
+            flightElement.addElement("serviceType").addText("");
+        }
+
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
+    @Path("/preOrderItems")
+    public Response getPreOrderItems() {
+        List<PreOrderItem> preOrderItems = (List<PreOrderItem>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.PreOrderItem");
+        Document document = DocumentHelper.createDocument();
+
+        Element root = document.addElement( "items" );
+        for(PreOrderItem preOrder : preOrderItems) {
+            Element item = root.addElement("item");
+            item.addElement("preOrderId").addText(String.valueOf(preOrder.getPreOrderId()));
+            item.addElement("category").addText(preOrder.getCategory());
+            item.addElement("itemNo").addText(preOrder.getItemCode());
+            item.addElement("quantity").addText(String.valueOf(preOrder.getQuantity()));
+        }
+        if(preOrderItems.size() == 1){
+            Element flightElement = root.addElement("item");
+            flightElement.addElement("preOrderId").addText("");
+            flightElement.addElement("category").addText("");
+            flightElement.addElement("itemNo").addText("");
+            flightElement.addElement("quantity").addText("");
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
     @Path("/equipmentType")
     public Response getEquipmentTypes() {
         List<EquipmentType> equipmentTypes = (List<EquipmentType>)connection.getAllValues("com.back.office.ws.entity.EquipmentType");

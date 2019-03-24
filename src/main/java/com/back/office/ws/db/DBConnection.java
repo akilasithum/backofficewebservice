@@ -28,6 +28,17 @@ public class DBConnection {
         }
     }
 
+    public List<?> getAllValuesNoRecordStatus(String className){
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(Class.forName(className));
+            return criteria.list();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List getFilterList(String filterName,String fieldName,Integer fieldValue,String className){
         try
         {
