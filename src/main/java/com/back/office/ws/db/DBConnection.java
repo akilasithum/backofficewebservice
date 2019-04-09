@@ -1,18 +1,13 @@
 package com.back.office.ws.db;
 
-import com.back.office.ws.entity.Item;
-import com.back.office.ws.entity.Promotion;
-import com.back.office.ws.entity.SIFDetails;
-import com.back.office.ws.entity.User;
+import com.back.office.ws.entity.*;
 import com.back.office.ws.persistence.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DBConnection {
 
@@ -90,6 +85,25 @@ public class DBConnection {
         criteria.add(Restrictions.eq("active", true));
         criteria.add(Restrictions.eq("recordStatus", 0));
         return criteria.list();
+    }
+
+    public List getFlightsFromBaseStation(String baseStation){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(Flight.class);
+        criteria.add(Restrictions.eq("baseStation", baseStation));
+        criteria.add(Restrictions.eq("recordStatus", 0));
+        return criteria.list();
+    }
+
+    public List getSectorsFromBaseStation(String baseStation){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(Flight.class);
+        criteria.add(Restrictions.eq("baseStation",baseStation));
+        criteria.setProjection(Projections.property("flightId"));
+
+        Criteria flightCriteria = session.createCriteria(Sector.class);
+        criteria.add(Restrictions.in("flightId",criteria.list()));
+        return flightCriteria.list();
     }
 
     public byte[] getItemImageFromItemCode(String itemCode){

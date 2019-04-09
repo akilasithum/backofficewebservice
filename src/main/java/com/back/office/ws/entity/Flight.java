@@ -5,20 +5,17 @@ import java.util.List;
 public class Flight {
 
     private int flightId;
-    private String flightName;
-    private String flightFrom;
-    private String flightTo;
-    private int noOfSectors;
-    private List<Sector> sectorList;
+    private String baseStation;
+    private String obFlightNo;
+    private String obFlightFrom;
+    private String obFlightTo;
+    private int obNoOfSectors;
+    private String ibFlightNo;
+    private String ibFlightFrom;
+    private String ibFlightTo;
+    private int ibNoOfSectors;
     private int recordStatus;
-
-    public int getRecordStatus() {
-        return recordStatus;
-    }
-
-    public void setRecordStatus(int recordStatus) {
-        this.recordStatus = recordStatus;
-    }
+    private String country;
 
     public int getFlightId() {
         return flightId;
@@ -28,43 +25,91 @@ public class Flight {
         this.flightId = flightId;
     }
 
-    public String getFlightName() {
-        return flightName;
+    public String getBaseStation() {
+        return baseStation;
     }
 
-    public void setFlightName(String flightName) {
-        this.flightName = flightName;
+    public void setBaseStation(String baseStation) {
+        this.baseStation = baseStation;
     }
 
-    public String getFlightFrom() {
-        return flightFrom;
+    public String getObFlightNo() {
+        return obFlightNo;
     }
 
-    public void setFlightFrom(String flightFrom) {
-        this.flightFrom = flightFrom;
+    public void setObFlightNo(String obFlightNo) {
+        this.obFlightNo = obFlightNo;
     }
 
-    public String getFlightTo() {
-        return flightTo;
+    public String getObFlightFrom() {
+        return obFlightFrom;
     }
 
-    public void setFlightTo(String flightTo) {
-        this.flightTo = flightTo;
+    public void setObFlightFrom(String obFlightFrom) {
+        this.obFlightFrom = obFlightFrom;
     }
 
-    public int getNoOfSectors() {
-        return noOfSectors;
+    public String getObFlightTo() {
+        return obFlightTo;
     }
 
-    public void setNoOfSectors(int noOfSectors) {
-        this.noOfSectors = noOfSectors;
+    public void setObFlightTo(String obFlightTo) {
+        this.obFlightTo = obFlightTo;
     }
 
-    public List<Sector> getSectorList() {
-        return sectorList;
+    public int getObNoOfSectors() {
+        return obNoOfSectors;
     }
 
-    public void setSectorList(List<Sector> sectorList) {
-        this.sectorList = sectorList;
+    public void setObNoOfSectors(int obNoOfSectors) {
+        this.obNoOfSectors = obNoOfSectors;
+    }
+
+    public String getIbFlightNo() {
+        return ibFlightNo;
+    }
+
+    public void setIbFlightNo(String ibFlightNo) {
+        this.ibFlightNo = ibFlightNo;
+    }
+
+    public String getIbFlightFrom() {
+        return ibFlightFrom;
+    }
+
+    public void setIbFlightFrom(String ibFlightFrom) {
+        this.ibFlightFrom = ibFlightFrom;
+    }
+
+    public String getIbFlightTo() {
+        return ibFlightTo;
+    }
+
+    public void setIbFlightTo(String ibFlightTo) {
+        this.ibFlightTo = ibFlightTo;
+    }
+
+    public int getIbNoOfSectors() {
+        return ibNoOfSectors;
+    }
+
+    public void setIbNoOfSectors(int ibNoOfSectors) {
+        this.ibNoOfSectors = ibNoOfSectors;
+    }
+
+    public int getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(int recordStatus) {
+        this.recordStatus = recordStatus;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

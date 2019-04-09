@@ -18,6 +18,9 @@ public class SIFDetails {
     private Date crewOpenedTimeDate;
     private String crewClosedTime;
     private Date crewClosedTimeDate;
+    private Date flightDateStr;
+    private String flightDate;
+    private String packedUser;
 
     public String getSifNo() {
         return sifNo;
@@ -105,5 +108,29 @@ public class SIFDetails {
 
     public void setCrewClosedTimeDate(Date crewClosedTimeDate) {
         this.crewClosedTimeDate = crewClosedTimeDate;
+    }
+
+    public Date getFlightDateStr() {
+        return flightDateStr;
+    }
+
+    public void setFlightDateStr(Date flightDateStr) {
+        this.flightDateStr = flightDateStr;
+    }
+
+    public String getFlightDate() {
+        return flightDate;
+    }
+
+    public void setFlightDate(String flightDate) {
+        this.flightDate = flightDate;
+    }
+
+    public String getPackedUser() {
+        return packedUser;
+    }
+
+    public void setPackedUser(String packedUser) {
+        this.packedUser = packedUser;
     }
 }

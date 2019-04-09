@@ -178,6 +178,7 @@ public class HelloRestService {
                 sif.setPackedTimeDate(sif.getPackedTime() != null && !sif.getPackedTime().isEmpty() ? WSUtils.convertStringToDateTime(sif.getPackedTime()) : null);
                 sif.setCrewOpenedTimeDate(sif.getCrewOpenedTime() != null && !sif.getCrewOpenedTime() .isEmpty() ? WSUtils.convertStringToDateTime(sif.getCrewOpenedTime() ) : null);
                 sif.setCrewClosedTimeDate(sif.getCrewClosedTime() != null && !sif.getCrewClosedTime().isEmpty() ? WSUtils.convertStringToDateTime(sif.getCrewClosedTime()) : null);
+                sif.setFlightDateStr(sif.getFlightDate() != null && !sif.getFlightDate().isEmpty() ? WSUtils.convertStringToDate(sif.getFlightDate() ) : availableSif.getFlightDateStr() );
                 connection.updateObjectHBM(sif);
                 return Response.status(200).entity("ok").build();
             }
@@ -192,6 +193,65 @@ public class HelloRestService {
         }
     }
 
+    @POST
+    @Consumes("application/xml")
+    @Produces("text/plain")
+    @Path("/cartNumbers")
+    public Response updateCartItems(String msg) {
+        System.out.println("Request :" + msg);
+        JSONObject jsonObj  = XML.toJSONObject(msg);
+        Gson gson = new Gson();
+        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("cartNumbers");
+        JSONArray itemsArr = data.getJSONArray("cartNumber");
+        List<CartNumbers> cartNumbersList = gson.fromJson(itemsArr.toString(), new TypeToken<List<CartNumbers>>(){}.getType());
+        for(CartNumbers posFlight : cartNumbersList) {
+            if(posFlight.getCartNumber() != null && !posFlight.getCartNumber().isEmpty()) {
+                connection.insertObjectHBM(posFlight);
+            }
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
+    @POST
+    @Consumes("application/xml")
+    @Produces("text/plain")
+    @Path("/sealDetails")
+    public Response updateSealDetails(String msg) {
+        System.out.println("Request :" + msg);
+        JSONObject jsonObj  = XML.toJSONObject(msg);
+        Gson gson = new Gson();
+        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("seals");
+        JSONArray itemsArr = data.getJSONArray("seal");
+        List<SealDetails> sealDetails = gson.fromJson(itemsArr.toString(), new TypeToken<List<SealDetails>>(){}.getType());
+        for(SealDetails seal : sealDetails) {
+            if(seal.getSealNumber() != null && !seal.getSealNumber().isEmpty()) {
+                connection.insertObjectHBM(seal);
+            }
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
+    @POST
+    @Consumes("application/xml")
+    @Produces("text/plain")
+    @Path("/openingInventory")
+    public Response updateOpeningInventory(String msg) {
+        System.out.println("Request :" + msg);
+        JSONObject jsonObj  = XML.toJSONObject(msg);
+        Gson gson = new Gson();
+        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("inventories");
+        JSONArray itemsArr = data.getJSONArray("inventory");
+        List<OpeningInventory> openingInventories = gson.fromJson(itemsArr.toString(), new TypeToken<List<OpeningInventory>>(){}.getType());
+        for(OpeningInventory inventory : openingInventories) {
+            if(inventory.getItemId() != null && !inventory.getItemId().isEmpty()) {
+                //inventory.setCartNoInt(inventory.getCartNo() != null ? Integer.parseInt(inventory.getCartNo()) : 0);
+                inventory.setQuantityInt(inventory.getQuantity() != null ? Integer.parseInt(inventory.getQuantity()) : 0);
+                connection.insertObjectHBM(inventory);
+            }
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
     //-----GET methods -----
 
     @GET // This annotation indicates GET request
@@ -201,37 +261,47 @@ public class HelloRestService {
     }
 
     @GET
+    @Path("/sectors")
+    public Response getSectorDetails(@QueryParam("baseStation") String baseStation) {
+        List<Sector> sectors = (List<Sector>) connection.getSectorsFromBaseStation(baseStation);
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement( "sectors" );
+        for(Sector sector : sectors) {
+            Element sectorElement = root.addElement("sector");
+            sectorElement.addElement("from").addText(sector.getSectorFrom());
+            sectorElement.addElement("to").addText(sector.getSectorTo());
+            sectorElement.addElement("sectorType").addText(sector.getSectorType());
+            sectorElement.addElement("flightType").addText(sector.getFlightType());
+            sectorElement.addElement("flightNo").addText(String.valueOf(sector.getFlightId()));
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
     @Path("/flights")
-    public Response flightDetails() {
-        List<Flight> flights = (List<Flight>)connection.getAllValues("com.back.office.ws.entity.Flight");
+    public Response flightDetails(@QueryParam("baseStation") String baseStation) {
+        List<Flight> flights = (List<Flight>)connection.getFlightsFromBaseStation(baseStation);
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement( "flights" );
         for(Flight flight : flights){
-            Element flightElement = root.addElement("flight")
-                    .addAttribute("flightName", flight.getFlightName());
-            flightElement.addElement("from").addText(flight.getFlightFrom());
-            flightElement.addElement("to").addText(flight.getFlightTo());
-            List<Sector> sectors = connection.getFilterList("sectorFilter","flightId",flight.getFlightId(),
-                    "com.back.office.ws.entity.Sector");
-            Element sectorMainElement = flightElement.addElement("sectors");
-            for(Sector sector : sectors) {
-                Element sectorElement = sectorMainElement.addElement("sector");
-                sectorElement.addElement("from").addText(sector.getSectorFrom());
-                sectorElement.addElement("to").addText(sector.getSectorTo());
-                sectorElement.addElement("type").addText(sector.getSectorType());
-            }
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightId").addText(String.valueOf(flight.getFlightId()));
+            flightElement.addElement("obFlightName").addText(flight.getObFlightNo());
+            flightElement.addElement("obFrom").addText(flight.getObFlightFrom());
+            flightElement.addElement("obTo").addText(flight.getObFlightTo());
+            flightElement.addElement("ibFlightName").addText(flight.getIbFlightNo());
+            flightElement.addElement("ibFrom").addText(flight.getIbFlightFrom());
+            flightElement.addElement("ibTo").addText(flight.getIbFlightTo());
         }
         if(flights.size() == 1){
-            Element orderMainDetail = root.addElement("flight");
-            orderMainDetail.addElement("flightName").addText("");
-            orderMainDetail.addElement("from").addText("");
-            orderMainDetail.addElement("to").addText("");
-            Element sectorMainElement = orderMainDetail.addElement("sectors");
-            Element sectorElement = sectorMainElement.addElement("sector");
-            sectorElement.addElement("from").addText("");
-            sectorElement.addElement("to").addText("");
-            sectorElement.addElement("type").addText("");
-
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightId").addText("");
+            flightElement.addElement("obFlightName").addText("");
+            flightElement.addElement("obFrom").addText("");
+            flightElement.addElement("obTo").addText("");
+            flightElement.addElement("ibFlightName").addText("");
+            flightElement.addElement("ibFrom").addText("");
+            flightElement.addElement("ibTo").addText("");
         }
         return Response.status(200).entity(document.asXML()).build();
     }
