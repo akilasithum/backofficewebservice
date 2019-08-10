@@ -4,7 +4,9 @@ public class CartNumbers {
 
     private int cartNumberId;
     private String cartNumber;
+    private String serviceType;
     private String sifNo;
+    private String packType;
 
     public int getCartNumberId() {
         return cartNumberId;
@@ -28,5 +30,21 @@ public class CartNumbers {
 
     public void setSifNo(String sifNo) {
         this.sifNo = sifNo;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getPackType() {
+        return packType;
+    }
+
+    public void setPackType(String packType) {
+        this.packType = packType;
     }
 }

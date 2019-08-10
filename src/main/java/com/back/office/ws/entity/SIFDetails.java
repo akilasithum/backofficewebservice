@@ -21,6 +21,7 @@ public class SIFDetails {
     private Date flightDateStr;
     private String flightDate;
     private String packedUser;
+    private String programs;
 
     public String getSifNo() {
         return sifNo;
@@ -132,5 +133,13 @@ public class SIFDetails {
 
     public void setPackedUser(String packedUser) {
         this.packedUser = packedUser;
+    }
+
+    public String getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(String programs) {
+        this.programs = programs;
     }
 }

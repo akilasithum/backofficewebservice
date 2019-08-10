@@ -32,5 +32,8 @@
         <property name="packedUser" type="java.lang.String">
             <column name="packedUser" length="150" />
         </property>
+        <property name="programs" type="java.lang.String">
+            <column name="programs" length="150" />
+        </property>
     </class>
 </hibernate-mapping>

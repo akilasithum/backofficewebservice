@@ -14,5 +14,11 @@
         <property name="sifNo" type="java.lang.String">
             <column name="sifNo"  length="50"/>
         </property>
+        <property name="serviceType" type="java.lang.String">
+            <column name="serviceType"  length="50"/>
+        </property>
+        <property name="packType" type="java.lang.String">
+            <column name="packType"  length="50"/>
+        </property>
     </class>
 </hibernate-mapping>

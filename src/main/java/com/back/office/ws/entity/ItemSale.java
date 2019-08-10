@@ -10,6 +10,7 @@ public class ItemSale {
     private int quantityInt;
     private String price;
     private float priceFloat;
+    private float unitCostPrice;
 
     public int getSaleOrderId() {
         return saleOrderId;
@@ -73,5 +74,13 @@ public class ItemSale {
 
     public void setPriceFloat(float priceFloat) {
         this.priceFloat = priceFloat;
+    }
+
+    public float getUnitCostPrice() {
+        return unitCostPrice;
+    }
+
+    public void setUnitCostPrice(float unitCostPrice) {
+        this.unitCostPrice = unitCostPrice;
     }
 }

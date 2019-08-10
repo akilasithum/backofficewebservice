@@ -23,11 +23,53 @@ public class DBConnection {
         }
     }
 
+    public Map<String,Item> getIemCodeItemsMap(){
+        Map<String,Item> map = new HashMap<String, Item>();
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(Item.class);
+            criteria.add(Restrictions.eq("recordStatus", 0));
+            List<Item> items = criteria.list();
+            for(Item item : items){
+                map.put(item.getItemCode(),item);
+            }
+            return map;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List<?> getAllValuesNoRecordStatus(String className){
         try
         {
             Session session = HibernateUtil.getSessionFactory().openSession();
             Criteria criteria = session.createCriteria(Class.forName(className));
+            return criteria.list();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<PreOrderWeb> getPreOrdersForFlight(String flightNo,Date flightDate){
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(PreOrderWeb.class);
+            criteria.add(Restrictions.eq("flightNumber", flightNo));
+            criteria.add(Restrictions.eq("flightDate", flightDate));
+            return criteria.list();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<PreOrderItemWeb> getPreOrderItems(int preOrderId){
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(PreOrderItemWeb.class);
+            criteria.add(Restrictions.eq("preOrderId", preOrderId));
             return criteria.list();
         } catch (Exception e) {
             return null;
@@ -68,6 +110,22 @@ public class DBConnection {
         Criteria criteria = session.createCriteria(SIFDetails.class);
         criteria.add(Restrictions.eq("sifNoInt", sifId));
         return (SIFDetails) criteria.list().get(0);
+    }
+
+    public HHCMaster getHHC(String hhcId){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(HHCMaster.class);
+        criteria.add(Restrictions.eq("hhcId", hhcId));
+        List<HHCMaster> hhcMasters = criteria.list();
+        return (hhcMasters != null && hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
+    }
+
+    public EquipmentMaster getEquipment(String cartNo){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(EquipmentMaster.class);
+        criteria.add(Restrictions.eq("equipmentId", cartNo));
+        List<EquipmentMaster> hhcMasters = criteria.list();
+        return (hhcMasters != null && hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
     }
 
     public List getCurrentPromotions(){

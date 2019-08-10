@@ -4,6 +4,8 @@ import com.back.office.ws.db.DBConnection;
 import com.back.office.ws.entity.*;
 import com.back.office.ws.utils.WSUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -26,6 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,11 +110,13 @@ public class HelloRestService {
         JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("itemSales");
         JSONArray itemsArr = data.getJSONArray("itemSale");
         List<ItemSale> itemSaleList = gson.fromJson(itemsArr.toString(), new TypeToken<List<ItemSale>>(){}.getType());
+        Map<String,Item> codeItemMap = connection.getIemCodeItemsMap();
         for(ItemSale itemSale : itemSaleList){
             if(itemSale.getOrderId() != null && !itemSale.getOrderId().isEmpty()) {
                 itemSale.setItemIdInt(itemSale.getItemId() != null && !itemSale.getItemId().isEmpty() ? Integer.parseInt(itemSale.getItemId()) : 0);
                 itemSale.setQuantityInt(itemSale.getQuantity() != null && !itemSale.getQuantity().isEmpty() ? Integer.parseInt(itemSale.getQuantity()) : 0);
                 itemSale.setPriceFloat(itemSale.getPrice() != null && !itemSale.getPrice().isEmpty() ? Float.parseFloat(itemSale.getPrice()) : 0);
+                itemSale.setUnitCostPrice(codeItemMap.get(itemSale.getItemId()).getCostPrice()*itemSale.getQuantityInt());
                 connection.insertObjectHBM(itemSale);
             }
         }
@@ -180,6 +186,22 @@ public class HelloRestService {
                 sif.setCrewClosedTimeDate(sif.getCrewClosedTime() != null && !sif.getCrewClosedTime().isEmpty() ? WSUtils.convertStringToDateTime(sif.getCrewClosedTime()) : null);
                 sif.setFlightDateStr(sif.getFlightDate() != null && !sif.getFlightDate().isEmpty() ? WSUtils.convertStringToDate(sif.getFlightDate() ) : availableSif.getFlightDateStr() );
                 connection.updateObjectHBM(sif);
+
+                HHCMaster oldHhcMaster = connection.getHHC(sif.getDeviceId());
+                HHCMaster hhcMaster = new HHCMaster();
+                hhcMaster.setFlightNo(sif.getPackedFor());
+                hhcMaster.setHhcId(sif.getDeviceId());
+                hhcMaster.setLastUsedDate(sif.getFlightDateStr());
+                hhcMaster.setStatus("Active");
+                if(oldHhcMaster == null) {
+                    connection.insertObjectHBM(hhcMaster);
+                }
+                else{
+                    oldHhcMaster.setRecordStatus(1);
+                    connection.updateObjectHBM(oldHhcMaster);
+                    connection.insertObjectHBM(hhcMaster);
+                }
+
                 return Response.status(200).entity("ok").build();
             }
             else{
@@ -204,9 +226,25 @@ public class HelloRestService {
         JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("cartNumbers");
         JSONArray itemsArr = data.getJSONArray("cartNumber");
         List<CartNumbers> cartNumbersList = gson.fromJson(itemsArr.toString(), new TypeToken<List<CartNumbers>>(){}.getType());
-        for(CartNumbers posFlight : cartNumbersList) {
-            if(posFlight.getCartNumber() != null && !posFlight.getCartNumber().isEmpty()) {
-                connection.insertObjectHBM(posFlight);
+        for(CartNumbers cartNumber : cartNumbersList) {
+            if(cartNumber.getCartNumber() != null && !cartNumber.getCartNumber().isEmpty()) {
+                connection.insertObjectHBM(cartNumber);
+                EquipmentMaster equipmentMaster = new EquipmentMaster();
+                EquipmentMaster oldHhcMaster = connection.getEquipment(cartNumber.getCartNumber());
+                equipmentMaster.setEquipmentId(cartNumber.getCartNumber());
+                SIFDetails sif = connection.getSIF(Integer.parseInt(cartNumber.getSifNo()));
+                equipmentMaster.setFlightNumber(sif.getDeviceId());
+                equipmentMaster.setLastUsedDate(sif.getFlightDateStr());
+                equipmentMaster.setStatus("Active");
+                if(oldHhcMaster == null) {
+                    connection.insertObjectHBM(equipmentMaster);
+                }
+                else{
+                    oldHhcMaster.setRecordStatus(1);
+                    connection.updateObjectHBM(oldHhcMaster);
+                    connection.insertObjectHBM(equipmentMaster);
+                }
+
             }
         }
         return Response.status(200).entity("ok").build();
@@ -234,6 +272,26 @@ public class HelloRestService {
     @POST
     @Consumes("application/xml")
     @Produces("text/plain")
+    @Path("/faDetails")
+    public Response updateFADetails(String msg) {
+        System.out.println("Request :" + msg);
+        JSONObject jsonObj  = XML.toJSONObject(msg);
+        Gson gson = new Gson();
+        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("faDetails");
+        JSONArray itemsArr = data.getJSONArray("fa");
+        List<FaDetails> sealDetails = gson.fromJson(itemsArr.toString(), new TypeToken<List<FaDetails>>(){}.getType());
+        for(FaDetails fa : sealDetails) {
+            if(fa.getFaName() != null && !fa.getFaName().isEmpty()) {
+                fa.setFlightDateFld(WSUtils.convertStringToDate(fa.getFlightDate()));
+                connection.insertObjectHBM(fa);
+            }
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
+    @POST
+    @Consumes("application/xml")
+    @Produces("text/plain")
     @Path("/openingInventory")
     public Response updateOpeningInventory(String msg) {
         System.out.println("Request :" + msg);
@@ -251,6 +309,25 @@ public class HelloRestService {
         }
         return Response.status(200).entity("ok").build();
     }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @Path("/preOrder")
+    public Response updatePreOrder(String msg) {
+        System.out.println("Request :" + msg);
+
+        Gson gson = new Gson();
+        PreOrderWeb preOrder = gson.fromJson(msg, PreOrderWeb.class);
+        int preOrderId = preOrder.getOrderNumber();
+        connection.insertObjectHBM(preOrder);
+        for(PreOrderItemWeb item : preOrder.getProducts()){
+            item.setPreOrderId(preOrderId);
+            connection.insertObjectHBM(item);
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
 
     //-----GET methods -----
 
@@ -335,44 +412,79 @@ public class HelloRestService {
         return Response.status(200).entity(document.asXML()).build();
     }
 
+    public static Date convertStringToDate(String dateStr){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return simpleDateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
     @GET
     @Path("/preOrders")
-    public Response getPreOrders() {
-        List<PreOrder> preOrders = (List<PreOrder>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.PreOrder");
+    public Response getPreOrders(@QueryParam("flightNumber") String flightNo,@QueryParam("flightDate") String flightDate) {
+
+
+        List<PreOrderWeb> preOrders = connection.getPreOrdersForFlight(flightNo.replace("--"," "),convertStringToDate(flightDate));
         Document document = DocumentHelper.createDocument();
 
         Element root = document.addElement( "preOrders" );
-        for(PreOrder preOrder : preOrders) {
-            Element item = root.addElement("preOrder");
+        JSONObject returnObj = new JSONObject();
+        JSONArray preOrderArray = new JSONArray();
+        for(PreOrderWeb preOrder : preOrders) {
+
+            JSONObject preOrderObj = new JSONObject();
+            preOrderObj.put("preOrderId",String.valueOf(preOrder.getOrderNumber()));
+            preOrderObj.put("PNR",preOrder.getPnrNumber());
+            preOrderObj.put("customerName",preOrder.getUserName());
+            preOrderObj.put("serviceType",preOrder.getServiceType());
+
+            JSONArray itemArr = new JSONArray();
+
+            List<PreOrderItemWeb> preOrderItemWebList = connection.getPreOrderItems(preOrder.getOrderNumber());
+            for(PreOrderItemWeb item : preOrderItemWebList){
+                JSONObject itemObj = new JSONObject();
+                itemObj.put("preOrderId",String.valueOf(item.getPreOrderId()));
+                /*itemObj.put("category",item.getCategory());*/
+                itemObj.put("itemNo",item.getProductNumber());
+                itemObj.put("quantity",String.valueOf(item.getQty()));
+                itemArr.put(itemObj);
+            }
+            preOrderObj.put("items",itemArr);
+            preOrderArray.put(preOrderObj);
+
+           /* Element item = root.addElement("preOrder");
             item.addElement("preOrderId").addText(String.valueOf(preOrder.getPreOrderId()));
-            item.addElement("PNR").addText(preOrder.getPNR());
-            item.addElement("customerName").addText(preOrder.getCustomerName());
-            item.addElement("serviceType").addText(preOrder.getServiceType());
+            item.addElement("PNR").addText(preOrder.getPnrNumber());
+            item.addElement("customerName").addText(preOrder.getUserName());
+            item.addElement("serviceType").addText(preOrder.getServiceType());*/
         }
-        if(preOrders.size() == 1){
+        returnObj.put("preOrder",preOrderArray);
+        /*if(preOrders.size() == 1){
             Element flightElement = root.addElement("preOrder");
             flightElement.addElement("preOrderId").addText("");
             flightElement.addElement("PNR").addText("");
             flightElement.addElement("customerName").addText("");
             flightElement.addElement("serviceType").addText("");
-        }
+        }*/
 
-        return Response.status(200).entity(document.asXML()).build();
+        return Response.status(200).entity(returnObj.toString()).build();
     }
 
     @GET
     @Path("/preOrderItems")
     public Response getPreOrderItems() {
-        List<PreOrderItem> preOrderItems = (List<PreOrderItem>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.PreOrderItem");
+        List<PreOrderItemWeb> preOrderItems = (List<PreOrderItemWeb>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.PreOrderItem");
         Document document = DocumentHelper.createDocument();
 
         Element root = document.addElement( "items" );
-        for(PreOrderItem preOrder : preOrderItems) {
+        for(PreOrderItemWeb preOrder : preOrderItems) {
             Element item = root.addElement("item");
             item.addElement("preOrderId").addText(String.valueOf(preOrder.getPreOrderId()));
-            item.addElement("category").addText(preOrder.getCategory());
-            item.addElement("itemNo").addText(preOrder.getItemCode());
-            item.addElement("quantity").addText(String.valueOf(preOrder.getQuantity()));
+            /*item.addElement("category").addText(preOrder.getCategory());*/
+            item.addElement("itemNo").addText(preOrder.getProductNumber());
+            item.addElement("quantity").addText(String.valueOf(preOrder.getQty()));
         }
         if(preOrderItems.size() == 1){
             Element flightElement = root.addElement("item");

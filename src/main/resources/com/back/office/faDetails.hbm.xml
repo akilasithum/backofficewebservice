@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.FaDetails" table="fa_details" catalog="">
+        <id name="faDetailsId" type="java.lang.Integer">
+            <column name="faDetailsId" />
+            <generator class="identity" />
+        </id>
+        <property name="flightNo" type="java.lang.String">
+            <column name="flightNo" length="50" />
+        </property>
+        <property name="flightDateFld" type="java.util.Date">
+            <column name="flightDate"  />
+        </property>
+        <property name="sector" type="java.lang.String">
+            <column name="sector" length="50" />
+        </property>
+        <property name="faName" type="java.lang.String">
+            <column name="faName"  length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

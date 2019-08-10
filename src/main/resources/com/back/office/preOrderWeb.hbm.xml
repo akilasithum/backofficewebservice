@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.PreOrderWeb" table="preorder" catalog="">
+        <id name="preOrderId" type="java.lang.Integer">
+            <column name="preOrderId" />
+            <generator class="identity" />
+        </id>
+        <property name="orderNumber" type="java.lang.Integer">
+            <column name="orderNumber" />
+        </property>
+        <property name="userId" type="java.lang.Integer">
+            <column name="userId" />
+        </property>
+        <property name="orderDate" type="java.util.Date">
+            <column name="orderDate" />
+        </property>
+        <property name="pnrNumber" type="java.lang.String">
+            <column name="pnrNumber" length="20" />
+        </property>
+        <property name="flightNumber" type="java.lang.String">
+            <column name="flightNumber" length="50" />
+        </property>
+        <property name="flightFrom" type="java.lang.String">
+            <column name="flightFrom" length="50" />
+        </property>
+        <property name="flightDate" type="java.util.Date">
+            <column name="flightDate" />
+        </property>
+        <property name="userName" type="java.lang.String">
+            <column name="userName" length="50" />
+        </property>
+        <property name="phone" type="java.lang.String">
+            <column name="phone" length="50" />
+        </property>
+        <property name="email" type="java.lang.String">
+            <column name="email" length="50" />
+        </property>
+        <property name="flightTo" type="java.lang.String">
+            <column name="flightTo" length="50" />
+        </property>
+        <property name="invoiceNumber" type="java.lang.String">
+            <column name="invoiceNumber" length="50" />
+        </property>
+        <property name="serviceType" type="java.lang.String">
+            <column name="serviceType" length="50" />
+        </property>
+        <property name="purchaseAmount" type="java.lang.Float">
+            <column name="purchaseAmount" />
+        </property>
+    </class>
+</hibernate-mapping>
