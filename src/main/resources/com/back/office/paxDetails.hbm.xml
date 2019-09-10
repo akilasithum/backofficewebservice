@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.back.office.ws.entity.PaxDetails" table="pos_pax_details" catalog="">
+        <id name="paxId" type="java.lang.Integer">
+            <column name="paxId" />
+            <generator class="identity" />
+        </id>
+        <property name="paxName" type="java.lang.String">
+            <column name="paxName" length="100" />
+        </property>
+        <property name="orderId" type="java.lang.String">
+            <column name="orderId"  length="30"/>
+        </property>
+        <property name="pnr" type="java.lang.String">
+            <column name="pnr" length="30" />
+        </property>
+        <property name="seatNo" type="java.lang.String">
+            <column name="seatNo" length="30" />
+        </property>
+        <property name="email" type="java.lang.String">
+            <column name="email" length="30" />
+        </property>
+
+    </class>
+</hibernate-mapping>

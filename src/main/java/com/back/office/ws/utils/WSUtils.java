@@ -36,4 +36,9 @@ public class WSUtils {
             return null;
         }
     }
+
+    public static String getDateFromDateTime(Date date){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return format.format( date );
+    }
 }

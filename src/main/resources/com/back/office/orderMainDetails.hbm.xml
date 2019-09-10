@@ -10,8 +10,8 @@
         <property name="orderId" type="java.lang.String">
             <column name="orderId" length="50"/>
         </property>
-        <property name="serviceType" type="java.lang.String">
-            <column name="serviceType" length="30"/>
+        <property name="category" type="java.lang.String">
+            <column name="category" length="30"/>
         </property>
         <property name="taxFloat" type="java.lang.Float">
             <column name="tax"  />
@@ -19,14 +19,20 @@
         <property name="discountFloat" type="java.lang.Float">
             <column name="discount" />
         </property>
-        <property name="seatNo" type="java.lang.String">
-            <column name="seatNo" length="30" />
-        </property>
         <property name="subTotalFloat" type="java.lang.Float">
             <column name="subTotal" />
         </property>
         <property name="flightId" type="java.lang.String">
             <column name="flightId " length="30"/>
+        </property>
+        <property name="sellerId" type="java.lang.String">
+            <column name="sellerId " length="30"/>
+        </property>
+        <property name="date" type="java.util.Date">
+        <column name="date"/>
+    </property>
+        <property name="flightDateVal" type="java.util.Date">
+            <column name="flightDate" />
         </property>
     </class>
 </hibernate-mapping>

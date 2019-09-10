@@ -1,6 +1,10 @@
 package com.back.office.ws.entity;
 
-    public class OrderMainDetails {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class OrderMainDetails {
 
     private int orderDetailId;
     private String orderId;
@@ -8,11 +12,14 @@ package com.back.office.ws.entity;
     private float taxFloat;
     private String discount;
     private float discountFloat;
-    private String seatNo;
     private String subTotal;
     private float subTotalFloat;
-    private String serviceType;
+    private String category;
     private String flightId;
+    private String sellerId;
+    private Date date;
+    private Date flightDateVal;
+    private String flightDate;
 
         public int getOrderDetailId() {
             return orderDetailId;
@@ -46,14 +53,6 @@ package com.back.office.ws.entity;
         this.discount = discount;
     }
 
-    public String getSeatNo() {
-        return seatNo;
-    }
-
-    public void setSeatNo(String seatNo) {
-        this.seatNo = seatNo;
-    }
-
     public String getSubTotal() {
         return subTotal;
     }
@@ -62,13 +61,13 @@ package com.back.office.ws.entity;
         this.subTotal = subTotal;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
+        public String getCategory() {
+            return category;
+        }
 
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
+        public void setCategory(String category) {
+            this.category = category;
+        }
 
         public float getTaxFloat() {
             return taxFloat;
@@ -101,4 +100,38 @@ package com.back.office.ws.entity;
         public void setFlightId(String flightId) {
             this.flightId = flightId;
         }
+
+        public String getSellerId() {
+            return sellerId;
+        }
+
+        public void setSellerId(String sellerId) {
+            this.sellerId = sellerId;
+        }
+
+
+
+    public Date getDate() {
+        return date;
     }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getFlightDateVal() {
+        return flightDateVal;
+    }
+
+    public void setFlightDateVal(Date flightDateVal) {
+        this.flightDateVal = flightDateVal;
+    }
+
+    public String getFlightDate() {
+        return flightDate;
+    }
+
+    public void setFlightDate(String flightDate) {
+        this.flightDate = flightDate;
+    }
+}

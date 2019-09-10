@@ -17,6 +17,9 @@
         <property name="category" type="java.lang.String">
             <column name="category"  length="30"/>
         </property>
+        <property name="bobCategory" type="java.lang.String">
+            <column name="bobCategory"  length="50"/>
+        </property>
         <property name="catalogue" type="java.lang.String">
             <column name="catalogue" length="30" />
         </property>

@@ -38,5 +38,10 @@ connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</prop
         <mapping resource="com/back/office/sifDetails.hbm.xml"></mapping>
         <mapping resource="com/back/office/promotion.hbm.xml"></mapping>
         <mapping resource="com/back/office/user.hbm.xml"></mapping>
+        <mapping resource="com/back/office/DepartureFlight.hbm.xml"></mapping>
+        <mapping resource="com/back/office/paxDetails.hbm.xml"></mapping>
+        <mapping resource="com/back/office/OrderNowItems.hbm.xml"></mapping>
+        <mapping resource="com/back/office/OrderNow.hbm.xml"></mapping>
+        <mapping resource="com/back/office/ArrivalFlight.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

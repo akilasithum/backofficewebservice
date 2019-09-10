@@ -11,13 +11,13 @@
         <property name="orderId" type="java.lang.String">
             <column name="orderId" length="50"/>
         </property>
-        <property name="itemIdInt" type="java.lang.Integer">
-            <column name="itemId"/>
+        <property name="itemId" type="java.lang.String">
+            <column name="itemId" length="50"/>
         </property>
-        <property name="quantityInt" type="java.lang.Integer">
+        <property name="quantity" type="java.lang.Integer">
             <column name="quantity" />
         </property>
-        <property name="priceFloat" type="java.lang.Float">
+        <property name="price" type="java.lang.Float">
             <column name="price" />
         </property>
     </class>

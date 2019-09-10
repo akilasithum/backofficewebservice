@@ -5,6 +5,7 @@ import com.back.office.ws.entity.*;
 import com.back.office.ws.utils.WSUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
@@ -95,7 +96,7 @@ public class HelloRestService {
         return Response.status(200).entity("ok").build();
     }
 
-    @POST
+/*    @POST
     @Consumes("application/xml")
     @Produces("text/plain")
     @Path("/itemSales")
@@ -115,7 +116,7 @@ public class HelloRestService {
             }
         }
         return Response.status(200).entity("ok").build();
-    }
+    }*/
 
     @POST
     @Consumes("application/xml")
@@ -192,6 +193,79 @@ public class HelloRestService {
         }
     }
 
+    @POST
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @Path("/singleSale")
+    public Response singleSale(String msg) {
+        System.out.println("Request :" + msg);
+        List<CreditCard> creditCardsObj = null;
+        JSONObject jsonObj = new JSONObject(msg);
+        JSONArray dailySales = jsonObj.getJSONObject("dailySales").getJSONArray("sales");
+        JSONArray payments = jsonObj.getJSONObject("payments").getJSONArray("payments");
+        JSONObject mainDetails = (JSONObject)jsonObj.get("mainDetails");
+        JSONObject pax = (JSONObject)jsonObj.get("pax");
+        Gson gson = new Gson();
+        if(isJsonMessageAvailable(jsonObj,"creditCard")){
+            JSONArray creditCards = jsonObj.getJSONObject("creditCard").getJSONArray("creditCards");
+            creditCardsObj = gson.fromJson(creditCards.toString(), new TypeToken<List<CreditCard>>(){}.getType());
+            for(CreditCard creditCard : creditCardsObj){
+                connection.insertObjectHBM(creditCard);
+            }
+        }
+        OrderMainDetails mainDetailsObj = gson.fromJson(mainDetails.toString(), new TypeToken<OrderMainDetails>(){}.getType());
+        if(mainDetailsObj != null){
+            mainDetailsObj.setFlightDateVal(mainDetailsObj.getFlightDate() != null && !mainDetailsObj.getFlightDate().isEmpty()
+                    ? WSUtils.convertStringToDate(mainDetailsObj.getFlightDate()) : null);
+            mainDetailsObj.setDate(new Date());
+            mainDetailsObj.setSubTotalFloat(mainDetailsObj.getSubTotal() != null && !mainDetailsObj.getSubTotal().isEmpty() ?
+                    Float.parseFloat(mainDetailsObj.getSubTotal()) : 0);
+
+        }
+        PaxDetails paxDetails = gson.fromJson(pax.toString(), new TypeToken<PaxDetails>(){}.getType());
+        connection.insertObjectHBM(paxDetails);
+        List<ItemSale> itemSales = gson.fromJson(dailySales.toString(), new TypeToken<List<ItemSale>>(){}.getType());
+        for(ItemSale item : itemSales){
+            connection.insertObjectHBM(item);
+        }
+        if(mainDetailsObj.getCategory() != null && mainDetailsObj.getCategory().equalsIgnoreCase("order Now")){
+
+            OrderNow orderNow = new OrderNow();
+            orderNow.setFlightNo(mainDetailsObj.getFlightId());
+            orderNow.setOrderInTime(mainDetailsObj.getDate());
+            orderNow.setOrderNo(mainDetailsObj.getOrderId());
+            orderNow.setStatus("Pending");
+            orderNow.setPaxName(paxDetails.getPaxName());
+            orderNow.setPNR(paxDetails.getPnr());
+            orderNow.setSeatNo(paxDetails.getSeatNo());
+            connection.insertObjectHBM(orderNow);
+            for(ItemSale item : itemSales){
+                OrderNowItems orderNowItem = new OrderNowItems();
+                orderNowItem.setItemNo(item.getItemId());
+                orderNowItem.setOrderId(item.getOrderId());
+                orderNowItem.setQuantity(item.getQuantity());
+                connection.insertObjectHBM(orderNowItem);
+            }
+
+        }
+        connection.insertObjectHBM(mainDetailsObj);
+        List<PaymentMethods> paymentMethods = gson.fromJson(payments.toString(), new TypeToken<List<PaymentMethods>>(){}.getType());
+        for(PaymentMethods method : paymentMethods){
+            connection.insertObjectHBM(method);
+        }
+
+        return Response.status(200).entity("ok").build();
+    }
+
+    private boolean isJsonMessageAvailable(JSONObject jsonObject,String message){
+        try {
+            JSONObject json = jsonObject.getJSONObject(message);
+            return json != null;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
     //-----GET methods -----
 
     @GET // This annotation indicates GET request
@@ -231,6 +305,87 @@ public class HelloRestService {
             sectorElement.addElement("from").addText("");
             sectorElement.addElement("to").addText("");
             sectorElement.addElement("type").addText("");
+
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+
+    @GET
+    @Path("/departureFlightSchedule")
+    public Response getDepartureFlightsSchedule() {
+        List<DepartureFlights> flights = (List<DepartureFlights>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.DepartureFlights");
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement( "flights" );
+        for(DepartureFlights flight : flights){
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightNo").addText(flight.getFlightNo());
+            flightElement.addElement("flightTime").addText(WSUtils.getDateFromDateTime(flight.getFlightTime()));
+            flightElement.addElement("airline").addText(flight.getAirline());
+            flightElement.addElement("destination").addText(flight.getDestination());
+            flightElement.addElement("checkin").addText(flight.getCheckin());
+            flightElement.addElement("gate").addText(flight.getGate());
+            flightElement.addElement("status").addText(flight.getStatus());
+        }
+        if(flights.size() == 1){
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightNo").addText("");
+            flightElement.addElement("flightTime").addText("");
+            flightElement.addElement("airline").addText("");
+            flightElement.addElement("destination").addText("");
+            flightElement.addElement("checkin").addText("");
+            flightElement.addElement("gate").addText("");
+            flightElement.addElement("status").addText("");
+
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
+    @Path("/arrivalFlightSchedule")
+    public Response getArrivalFlightsSchedule() {
+        List<ArrivalFlight> flights = (List<ArrivalFlight>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.ArrivalFlight");
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement( "flights" );
+        for(ArrivalFlight flight : flights){
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightNo").addText(flight.getFlightNo());
+            flightElement.addElement("flightTime").addText(WSUtils.getDateFromDateTime(flight.getFlightTime()));
+            flightElement.addElement("airline").addText(flight.getAirline());
+            if(flight.getFrom() != null) flightElement.addElement("from").addText(flight.getFrom());
+            if(flight.getBelt() != null) flightElement.addElement("belt").addText(flight.getBelt());
+            if(flight.getGate() != null) flightElement.addElement("gate").addText(flight.getGate());
+            flightElement.addElement("status").addText(flight.getStatus());
+        }
+        if(flights.size() == 1){
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightNo").addText("");
+            flightElement.addElement("flightTime").addText("");
+            flightElement.addElement("airline").addText("");
+            flightElement.addElement("from").addText("");
+            flightElement.addElement("belt").addText("");
+            flightElement.addElement("gate").addText("");
+            flightElement.addElement("status").addText("");
+
+        }
+        return Response.status(200).entity(document.asXML()).build();
+    }
+
+    @GET
+    @Path("/departureFlights")
+    public Response departureFlightDetails() {
+        List<DepartureFlights> flights = (List<DepartureFlights>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.DepartureFlights");
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement( "flights" );
+        for(DepartureFlights flight : flights){
+            Element flightElement = root.addElement("flight");
+            flightElement.addElement("flightName").addText(flight.getFlightNo());
+            flightElement.addElement("flightTo").addText(flight.getDestination());
+        }
+        if(flights.size() == 1){
+            Element orderMainDetail = root.addElement("flight");
+            orderMainDetail.addElement("flightName").addText("");
+            orderMainDetail.addElement("flightTo").addText("");
 
         }
         return Response.status(200).entity(document.asXML()).build();
@@ -330,6 +485,9 @@ public class HelloRestService {
             flightElement.addElement("itemCode").addText(String.valueOf(item.getItemCode()));
             flightElement.addElement("itemName").addText(item.getItemName());
             flightElement.addElement("category").addText(item.getCategory());
+            if(item.getBobCategory() != null){
+                flightElement.addElement("bobCategory").addText(item.getBobCategory());
+            }
             flightElement.addElement("catlogNo").addText(item.getCatalogue());
             flightElement.addElement("price").addText(String.valueOf(item.getBasePrice()));
             flightElement.addElement("baseCurrency").addText(item.getBaseCurrency());

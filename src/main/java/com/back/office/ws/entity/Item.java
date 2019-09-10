@@ -5,6 +5,7 @@ public class Item {
     private String itemCode;
     private String itemName;
     private String category;
+    private String bobCategory;
     private String catalogue;
     private String costCurrency;
     private float costPrice;
@@ -44,6 +45,14 @@ public class Item {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getBobCategory() {
+        return bobCategory;
+    }
+
+    public void setBobCategory(String bobCategory) {
+        this.bobCategory = bobCategory;
     }
 
     public String getCatalogue() {

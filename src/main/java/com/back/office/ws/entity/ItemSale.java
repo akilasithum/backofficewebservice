@@ -5,11 +5,8 @@ public class ItemSale {
     private int saleOrderId;
     private String orderId;
     private String itemId;
-    private int itemIdInt;
-    private String quantity;
-    private int quantityInt;
-    private String price;
-    private float priceFloat;
+    private int quantity;
+    private float price;
 
     public int getSaleOrderId() {
         return saleOrderId;
@@ -35,43 +32,19 @@ public class ItemSale {
         this.itemId = itemId;
     }
 
-    public int getItemIdInt() {
-        return itemIdInt;
-    }
-
-    public void setItemIdInt(int itemIdInt) {
-        this.itemIdInt = itemIdInt;
-    }
-
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public int getQuantityInt() {
-        return quantityInt;
-    }
-
-    public void setQuantityInt(int quantityInt) {
-        this.quantityInt = quantityInt;
-    }
-
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
-    }
-
-    public float getPriceFloat() {
-        return priceFloat;
-    }
-
-    public void setPriceFloat(float priceFloat) {
-        this.priceFloat = priceFloat;
     }
 }
