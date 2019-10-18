@@ -1,18 +1,13 @@
 package com.back.office.ws.db;
 
-import com.back.office.ws.entity.Item;
-import com.back.office.ws.entity.Promotion;
-import com.back.office.ws.entity.SIFDetails;
-import com.back.office.ws.entity.User;
+import com.back.office.ws.entity.*;
 import com.back.office.ws.persistence.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DBConnection {
 
@@ -104,6 +99,25 @@ public class DBConnection {
             return (byte[]) criteria.list().get(0);
         }
         return null;
+    }
+
+    public DepartureFlights getFlightNameDepFlightMap(String flightNo){
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            Criteria criteria = session.createCriteria(DepartureFlights.class);
+            criteria.add(Restrictions.eq("flightNo", flightNo));
+            List itemDetails = criteria.list();
+            if(itemDetails != null && !itemDetails.isEmpty()){
+                return (DepartureFlights)itemDetails.get(0);
+            }
+            else return null;
+        } catch (Exception e) {
+
+
+            return null;
+        }
     }
 
     private Date yesterday(Date date) {

@@ -41,4 +41,10 @@ public class WSUtils {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return format.format( date );
     }
+
+    public static String getTimeStringFromDate(Date date){
+        if(date != null)
+            return new SimpleDateFormat("HH:mm").format(date);
+        else return null;
+    }
 }

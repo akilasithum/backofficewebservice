@@ -228,6 +228,7 @@ public class HelloRestService {
         for(ItemSale item : itemSales){
             connection.insertObjectHBM(item);
         }
+        DepartureFlights flight = connection.getFlightNameDepFlightMap(mainDetailsObj.getFlightId());
         if(mainDetailsObj.getCategory() != null && mainDetailsObj.getCategory().equalsIgnoreCase("order Now")){
 
             OrderNow orderNow = new OrderNow();
@@ -238,6 +239,10 @@ public class HelloRestService {
             orderNow.setPaxName(paxDetails.getPaxName());
             orderNow.setPNR(paxDetails.getPnr());
             orderNow.setSeatNo(paxDetails.getSeatNo());
+            if(flight != null){
+                orderNow.setDestination(flight.getDestination());
+                orderNow.setTime(WSUtils.getTimeStringFromDate(flight.getFlightTime()));
+            }
             connection.insertObjectHBM(orderNow);
             for(ItemSale item : itemSales){
                 OrderNowItems orderNowItem = new OrderNowItems();
