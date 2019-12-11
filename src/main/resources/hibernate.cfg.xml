@@ -8,7 +8,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <!--<property name="hibernate.connection.password"></property>-->
         <property name="hibernate.connection.password">M7d4a63</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/flight_pos</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/flight_pos_demo</property>
         <property name="hibernate.connection.username">remote</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="show_sql">true</property>
@@ -28,8 +28,8 @@
         <mapping resource="com/back/office/sifDetails.hbm.xml"></mapping>
         <mapping resource="com/back/office/promotion.hbm.xml"></mapping>
         <mapping resource="com/back/office/user.hbm.xml"></mapping>
-        <!--<mapping resource="com/back/office/preOrderItem.hbm.xml"></mapping>-->
-        <!--<mapping resource="com/back/office/preOrder.hbm.xml"></mapping>-->
+        <mapping resource="com/back/office/sifSheet.hbm.xml"></mapping>
+        <mapping resource="com/back/office/bondMessage.hbm.xml"></mapping>
         <mapping resource="com/back/office/cartNumber.hbm.xml"></mapping>
         <mapping resource="com/back/office/sealDetails.hbm.xml"></mapping>
         <mapping resource="com/back/office/openingInventory.hbm.xml"></mapping>
@@ -38,5 +38,6 @@
         <mapping resource="com/back/office/equipmentMaster.hbm.xml"></mapping>
         <mapping resource="com/back/office/preOrderWeb.hbm.xml"></mapping>
         <mapping resource="com/back/office/preOrderItemWeb.hbm.xml"></mapping>
+        <mapping resource="com/back/office/faMessages.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

@@ -117,7 +117,7 @@ public class DBConnection {
         Criteria criteria = session.createCriteria(HHCMaster.class);
         criteria.add(Restrictions.eq("hhcId", hhcId));
         List<HHCMaster> hhcMasters = criteria.list();
-        return (hhcMasters != null && hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
+        return (hhcMasters != null && !hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
     }
 
     public EquipmentMaster getEquipment(String cartNo){
@@ -125,7 +125,24 @@ public class DBConnection {
         Criteria criteria = session.createCriteria(EquipmentMaster.class);
         criteria.add(Restrictions.eq("equipmentId", cartNo));
         List<EquipmentMaster> hhcMasters = criteria.list();
-        return (hhcMasters != null && hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
+        return (hhcMasters != null && !hhcMasters.isEmpty()) ? hhcMasters.get(0) : null;
+    }
+
+    public List<EquipmentMaster> getEquipments(String flightNo,Date flightDate){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(EquipmentMaster.class);
+        criteria.add(Restrictions.eq("flightNumber", flightNo));
+        criteria.add(Restrictions.eq("lastUsedDate", flightDate));
+        criteria.add(Restrictions.eq("recordStatus", 0));
+        return criteria.list();
+    }
+
+    public EquipmentType getEquipmentType(String packType){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(EquipmentType.class);
+        criteria.add(Restrictions.eq("packType", packType));
+        List<EquipmentType> equipmentTypes = criteria.list();
+        return (equipmentTypes != null && !equipmentTypes.isEmpty()) ? equipmentTypes.get(0) : null;
     }
 
     public List getCurrentPromotions(){

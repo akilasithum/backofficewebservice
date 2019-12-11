@@ -50,5 +50,9 @@
         <property name="purchaseAmount" type="java.lang.Float">
             <column name="purchaseAmount" />
         </property>
+        <property name="typeOfOrder" type="java.lang.String">
+            <column name="typeOfOrder" />
+        </property>
+
     </class>
 </hibernate-mapping>

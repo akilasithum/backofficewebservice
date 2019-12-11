@@ -35,5 +35,8 @@
         <property name="programs" type="java.lang.String">
             <column name="programs" length="150" />
         </property>
+        <property name="kitCodes" type="java.lang.String">
+            <column name="kitCodes" length="150" />
+        </property>
     </class>
 </hibernate-mapping>

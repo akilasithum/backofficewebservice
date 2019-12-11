@@ -11,6 +11,7 @@ public class SIFDetails {
     private int sifNoInt;
     private String deviceId;
     private Date downloaded;
+    private String syncTime;
     private String packedFor;
     private String packedTime;
     private Date packedTimeDate;
@@ -22,6 +23,7 @@ public class SIFDetails {
     private String flightDate;
     private String packedUser;
     private String programs;
+    private String kitCodes;
 
     public String getSifNo() {
         return sifNo;
@@ -141,5 +143,21 @@ public class SIFDetails {
 
     public void setPrograms(String programs) {
         this.programs = programs;
+    }
+
+    public String getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(String syncTime) {
+        this.syncTime = syncTime;
+    }
+
+    public String getKitCodes() {
+        return kitCodes;
+    }
+
+    public void setKitCodes(String kitCodes) {
+        this.kitCodes = kitCodes;
     }
 }

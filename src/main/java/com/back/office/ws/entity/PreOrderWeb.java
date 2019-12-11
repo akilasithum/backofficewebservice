@@ -20,6 +20,7 @@ public class PreOrderWeb {
     private String invoiceNumber;
     private float purchaseAmount;
     private String serviceType;
+    private String typeOfOrder;
     private List<PreOrderItemWeb> products;
 
     public int getPreOrderId() {
@@ -148,5 +149,13 @@ public class PreOrderWeb {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public String getTypeOfOrder() {
+        return typeOfOrder;
+    }
+
+    public void setTypeOfOrder(String typeOfOrder) {
+        this.typeOfOrder = typeOfOrder;
     }
 }
