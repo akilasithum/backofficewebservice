@@ -44,16 +44,18 @@ public class HelloRestService {
     //----POST methods ----
 
     @POST
-    @Consumes("application/xml")
+    @Consumes("application/json")
     @Produces("text/plain")
     @Path("/userComments")
     public Response postMsg(String msg) {
+
         System.out.println("Request :" + msg);
-        JSONObject jsonObj  = XML.toJSONObject(msg);
         Gson gson = new Gson();
-        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("userComments");
-        JSONArray itemsArr = data.getJSONArray("userComment");
-        List<UserComment> userComments = gson.fromJson(itemsArr.toString(), new TypeToken<List<UserComment>>(){}.getType());
+        UserComments comments = gson.fromJson(msg, UserComments.class);
+        List<UserComment> userCommentList = comments.getUserComments();
+        for(UserComment comment : userCommentList){
+            connection.insertObjectHBM(comment);
+        }
         return Response.status(200).entity("ok").build();
     }
 
@@ -340,11 +342,27 @@ public class HelloRestService {
         PreOrders preOrders = gson.fromJson(msg, PreOrders.class);
         List<PreOrderWeb> preOrderWebList = preOrders.getPreOrders();
         for(PreOrderWeb preOrder : preOrderWebList){
+            preOrder.setPreOrderStatus("Active");
             int preOrderId = connection.insertObjectHBM(preOrder);
             for(PreOrderItemWeb item : preOrder.getProducts()){
                 item.setPreOrderId(preOrderId);
                 connection.insertObjectHBM(item);
             }
+        }
+        return Response.status(200).entity("ok").build();
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("text/plain")
+    @Path("/deliveredPreOrder")
+    public Response getDeliveredPreOrders(String msg) {
+        System.out.println("Request :" + msg);
+        Gson gson = new Gson();
+        PreOrders preOrders = gson.fromJson(msg, PreOrders.class);
+        List<PreOrderWeb> preOrderWebList = preOrders.getPreOrders();
+        for(PreOrderWeb preOrder : preOrderWebList){
+            connection.updatePreOrder(preOrder);
         }
         return Response.status(200).entity("ok").build();
     }
@@ -469,17 +487,17 @@ public class HelloRestService {
 
     @GET
     @Path("/messagesToHHC")
-    public Response getBondMessages() {
-        List<BondMessage> kitCodes = (List<BondMessage>)connection.getAllValuesNoRecordStatus("com.back.office.ws.entity.BondMessage");
+    public Response getBondMessages(@QueryParam("flightNumber") String flightNo,@QueryParam("flightDate") String flightDate) {
+        List<BondMessage> bondMessages = connection.getBondMessages(flightNo.replace("--"," "),convertStringToDate(flightDate));
         Document document = DocumentHelper.createDocument();
 
         Element root = document.addElement( "BondMsgs" );
-        for(BondMessage kitCode : kitCodes) {
+        for(BondMessage kitCode : bondMessages) {
             Element flightElement = root.addElement("BondMsg");
             flightElement.addElement("messageId").addText(String.valueOf(kitCode.getBondMessageId()));
             flightElement.addElement("messageBody").addText(kitCode.getMessageBody());
         }
-        if(kitCodes.size() == 1){
+        if(bondMessages.size() == 1){
             Element flightElement = root.addElement("BondMsg");
             flightElement.addElement("messageId").addText("");
             flightElement.addElement("messageBody").addText("");
@@ -488,24 +506,12 @@ public class HelloRestService {
         return Response.status(200).entity(document.asXML()).build();
     }
 
-    public static Date convertStringToDate(String dateStr){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            return simpleDateFormat.parse(dateStr);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
     @GET
     @Path("/preOrders")
     public Response getPreOrders(@QueryParam("flightNumber") String flightNo,@QueryParam("flightDate") String flightDate) {
 
-
         List<PreOrderWeb> preOrders = connection.getPreOrdersForFlight(flightNo.replace("--"," "),convertStringToDate(flightDate));
-        Document document = DocumentHelper.createDocument();
         Map<String,Item> itemMap = connection.getIemCodeItemsMap();
-        Element root = document.addElement( "preOrders" );
         JSONObject returnObj = new JSONObject();
         JSONArray preOrderArray = new JSONArray();
         for(PreOrderWeb preOrder : preOrders) {
@@ -530,21 +536,10 @@ public class HelloRestService {
             preOrderObj.put("items",itemArr);
             preOrderArray.put(preOrderObj);
 
-           /* Element item = root.addElement("preOrder");
-            item.addElement("preOrderId").addText(String.valueOf(preOrder.getPreOrderId()));
-            item.addElement("PNR").addText(preOrder.getPnrNumber());
-            item.addElement("customerName").addText(preOrder.getUserName());
-            item.addElement("serviceType").addText(preOrder.getServiceType());*/
+            preOrder.setPreOrderStatus("In Progress");
+            connection.updateObjectHBM(preOrder);
         }
         returnObj.put("preOrder",preOrderArray);
-        /*if(preOrders.size() == 1){
-            Element flightElement = root.addElement("preOrder");
-            flightElement.addElement("preOrderId").addText("");
-            flightElement.addElement("PNR").addText("");
-            flightElement.addElement("customerName").addText("");
-            flightElement.addElement("serviceType").addText("");
-        }*/
-
         return Response.status(200).entity(returnObj.toString()).build();
     }
 
@@ -657,7 +652,7 @@ public class HelloRestService {
     public Response getItemImages(String itemCode) throws IOException {
             byte[] itemImage = connection.getItemImageFromItemCode(itemCode);
             if(itemImage != null) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(itemImage);
+                /*ByteArrayInputStream bis = new ByteArrayInputStream(itemImage);
                 BufferedImage bImage = ImageIO.read(bis);
                 File file = new File(itemCode + ".png");
                 float width = bImage.getWidth();
@@ -681,9 +676,12 @@ public class HelloRestService {
                 Graphics2D g2d = outputImage.createGraphics();
                 g2d.drawImage(bImage, 0, 0, widthInt, heightInt, null);
                 g2d.dispose();
-                ImageIO.write(outputImage, "png", file);
-                return Response.ok(file, "image/png").header("Inline", "filename=\"" + file.getName() + "\"")
-                        .build();
+                ImageIO.write(outputImage, "png", file);*/
+                return Response.ok(
+                        itemImage,
+                        MediaType.APPLICATION_OCTET_STREAM_TYPE).build();
+                /*return Response.ok(file, "image/png").header("Inline", "filename=\"" + file.getName() + "\"")
+                        .build();*/
             }
             else {
                 return Response.status(200).entity("error").build();
@@ -784,5 +782,14 @@ public class HelloRestService {
             voucherElement.addElement("password").addText("");
         }
         return Response.status(200).entity(document.asXML()).build();
+    }
+
+    public static Date convertStringToDate(String dateStr){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return simpleDateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

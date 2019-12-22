@@ -64,6 +64,19 @@ public class DBConnection {
         }
     }
 
+    public List<BondMessage> getBondMessages(String flightNo,Date flightDate){
+        try
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria = session.createCriteria(BondMessage.class);
+            criteria.add(Restrictions.eq("flightNo", flightNo));
+            criteria.add(Restrictions.eq("flightDate", flightDate));
+            return criteria.list();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List<PreOrderItemWeb> getPreOrderItems(int preOrderId){
         try
         {
@@ -192,6 +205,25 @@ public class DBConnection {
             return (byte[]) criteria.list().get(0);
         }
         return null;
+    }
+
+    public void updatePreOrder(PreOrderWeb preOrder){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(PreOrderWeb.class);
+        criteria.add(Restrictions.eq("preOrderId", preOrder.getPreOrderId()));
+        List list = criteria.list();
+        if(list != null && list.size() == 1){
+            PreOrderWeb existingPreOrder = (PreOrderWeb) list.get(0);
+            existingPreOrder.setPreOrderStatus(preOrder.getPreOrderStatus());
+            session.beginTransaction();
+            session.update(existingPreOrder);
+            session.getTransaction().commit();
+            session.close();
+
+        }
+        else{
+            session.close();
+        }
     }
 
     private Date yesterday(Date date) {

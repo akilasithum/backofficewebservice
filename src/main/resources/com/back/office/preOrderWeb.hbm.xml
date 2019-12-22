@@ -53,6 +53,9 @@
         <property name="typeOfOrder" type="java.lang.String">
             <column name="typeOfOrder" />
         </property>
+        <property name="preOrderStatus" type="java.lang.String">
+            <column name="preOrderStatus" />
+        </property>
 
     </class>
 </hibernate-mapping>

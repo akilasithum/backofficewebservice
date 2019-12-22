@@ -1,9 +1,13 @@
 package com.back.office.ws.entity;
 
+import java.util.Date;
+
 public class UserComment {
 
     private int commentId;
     private String userId;
+    private String flightNo;
+    private Date flightDate;
     private String area;
     private String comment;
 
@@ -21,6 +25,22 @@ public class UserComment {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getFlightNo() {
+        return flightNo;
+    }
+
+    public void setFlightNo(String flightNo) {
+        this.flightNo = flightNo;
+    }
+
+    public Date getFlightDate() {
+        return flightDate;
+    }
+
+    public void setFlightDate(Date flightDate) {
+        this.flightDate = flightDate;
     }
 
     public String getArea() {

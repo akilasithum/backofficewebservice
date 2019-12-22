@@ -21,6 +21,7 @@ public class PreOrderWeb {
     private float purchaseAmount;
     private String serviceType;
     private String typeOfOrder;
+    private String preOrderStatus;
     private List<PreOrderItemWeb> products;
 
     public int getPreOrderId() {
@@ -157,5 +158,13 @@ public class PreOrderWeb {
 
     public void setTypeOfOrder(String typeOfOrder) {
         this.typeOfOrder = typeOfOrder;
+    }
+
+    public String getPreOrderStatus() {
+        return preOrderStatus;
+    }
+
+    public void setPreOrderStatus(String preOrderStatus) {
+        this.preOrderStatus = preOrderStatus;
     }
 }
