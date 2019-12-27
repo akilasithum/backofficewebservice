@@ -20,5 +20,8 @@
         <property name="faName" type="java.lang.String">
             <column name="faName"  length="50" />
         </property>
+        <property name="sifNoInt" type="java.lang.Integer">
+            <column name="sifNo"  length="50" />
+        </property>
     </class>
 </hibernate-mapping>

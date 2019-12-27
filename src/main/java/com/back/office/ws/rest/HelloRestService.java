@@ -305,6 +305,7 @@ public class HelloRestService {
         for(FaDetails fa : sealDetails) {
             if(fa.getFaName() != null && !fa.getFaName().isEmpty()) {
                 fa.setFlightDateFld(WSUtils.convertStringToDate(fa.getFlightDate()));
+                fa.setSifNoInt(Integer.parseInt(fa.getSifNo()));
                 connection.insertObjectHBM(fa);
             }
         }
@@ -677,6 +678,7 @@ public class HelloRestService {
                 g2d.drawImage(bImage, 0, 0, widthInt, heightInt, null);
                 g2d.dispose();
                 ImageIO.write(outputImage, "png", file);*/
+
                 return Response.ok(
                         itemImage,
                         MediaType.APPLICATION_OCTET_STREAM_TYPE).build();

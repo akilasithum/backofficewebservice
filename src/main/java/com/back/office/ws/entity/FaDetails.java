@@ -10,6 +10,8 @@ public class FaDetails {
     private Date flightDateFld;
     private String flightDate;
     private String faName;
+    private int sifNoInt;
+    private String sifNo;
 
     public int getFaDetailsId() {
         return faDetailsId;
@@ -57,5 +59,21 @@ public class FaDetails {
 
     public void setFlightDateFld(Date flightDateFld) {
         this.flightDateFld = flightDateFld;
+    }
+
+    public int getSifNoInt() {
+        return sifNoInt;
+    }
+
+    public void setSifNoInt(int sifNoInt) {
+        this.sifNoInt = sifNoInt;
+    }
+
+    public String getSifNo() {
+        return sifNo;
+    }
+
+    public void setSifNo(String sifNo) {
+        this.sifNo = sifNo;
     }
 }
